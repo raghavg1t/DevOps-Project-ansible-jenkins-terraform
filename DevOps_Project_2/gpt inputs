@@ -1,0 +1,119 @@
+- name: This sets up an httpd webserver
+  hosts: aws_ec2
+  become: yes
+  remote_user: ec2-user
+  gather_facts: true
+  vars:
+    ansible_ssh_private_key_file: "/etc/ansible/euran-jenkins.pem"  
+    ansible_ssh_user: "ec2-user"
+  tasks:
+  - name: "Install httpd and php packages"
+    package:
+        name:
+          - "httpd"
+          - "php"
+        state: present
+  - name: "copy code from GitHub"
+    get_url:
+        url: https://www.shubhammishra.in
+        dest: "/var/www/html/index.php"
+  - name: "Start httpd services"
+    service:
+        name: httpd
+        state: started
+  - name: Yum Install Packages
+    yum: name={{item}} state=latest
+    with_items:
+       - wget
+  - name: terraform install
+    unarchive:
+      src: https://releases.hashicorp.com/terraform/0.9.1/terraform_0.9.1_linux_amd64.zip
+      dest: /usr/bin
+      remote_src: True
+ChatGPT
+
+2 / 2
+
+The code snippet you've provided is an Ansible playbook written in YAML format. Playbooks are used in Ansible to define and execute a series of tasks on remote hosts. In this case, the playbook sets up an Apache HTTP server and performs some related tasks on AWS EC2 instances. Let's break down the contents of the playbook:
+
+Let's go through each part of the playbook:
+
+name: A description of what the playbook does.
+
+hosts: Specifies the target hosts on which the tasks will be executed. In this case, it's targeting hosts under the group name "aws_ec2."
+
+become: This option enables privilege escalation, allowing tasks to be executed as the root user (using sudo).
+
+remote_user: Specifies the remote user that Ansible should use to connect to the hosts. In this case, it's "ec2-user."
+
+gather_facts: This option instructs Ansible to gather facts about the remote hosts before executing tasks. Facts include information about the host's operating system, network configuration, etc.
+
+vars: Defines variables used within the playbook. In this case, it sets SSH-related variables.
+
+tasks: This is a list of tasks that will be executed on the remote hosts.
+
+name: A description of the task.
+
+package: Installs packages using the yum package manager. In this case, it installs "httpd" and "php."
+
+get_url: Downloads a file from a URL and places it in the specified destination. In this case, it's downloading from "https://www.shubhammishra.in" and saving it as "/var/www/html/index.php."
+
+service: Manages system services. It starts the "httpd" service.
+
+yum: Installs packages using the yum package manager. It installs "wget."
+
+unarchive: Unarchives (extracts) a compressed file from a source URL and places it in the specified destination. In this case, it's downloading Terraform and placing it in "/usr/bin."
+
+This playbook demonstrates how Ansible can be used to automate the setup of an Apache web server, install packages, copy files, and manage services on AWS EC2 instances. Make sure to customize the playbook to fit your specific environment and requirements.
+
+
+
+User
+httpd means
+ChatGPT
+"httpd" stands for Hypertext Transfer Protocol Daemon. It is the software that runs as a web server on a computer to serve web content over the internet. In other words, it's the core component responsible for handling incoming HTTP requests and serving web pages, files, and other resources to users' web browsers.
+
+Apache HTTP Server (often referred to as simply "Apache") is one of the most popular open-source web servers and is often used to host websites and web applications. It's widely known for its stability, performance, and flexibility, making it a popular choice for serving web content.
+
+The term "httpd" is commonly used as a shorthand way to refer to the Apache HTTP Server's daemon process that handles incoming HTTP requests. The daemon process is what allows your web browser to communicate with the server and retrieve the web pages and resources you request when browsing the internet.
+
+Here's a breakdown of the acronym:
+
+HTTP: Hypertext Transfer Protocol, which is the protocol used for transferring web content over the internet.
+
+Daemon: In the context of software, a daemon is a background process that runs continuously and provides certain services. In this case, the "httpd" daemon listens for incoming HTTP requests and responds with the appropriate content.
+
+In the Ansible playbook you provided earlier, tasks related to "httpd" involve installing the "httpd" package (Apache) and configuring it on the target hosts to set up a web server. This is a common task in DevOps and web development projects, as it's necessary to have a web server to host websites and web applications.
+
+
+
+
+User
+
+<body bgcolor='white'>
+<pre>
+<?php
+print("<b><font color=\"blue\">!! Hello !! This is Euran,\n\n! Welcome ! to My Web Server</font>\n\n");
+print (`/usr/sbin/ifconfig`);
+?>
+</pre>
+Here's what each part does:
+
+<body bgcolor='white'>: This sets the background color of the webpage to white.
+
+<pre>: This HTML tag defines preformatted text, which preserves line breaks and spacing as they are written.
+
+<?php ... ?>: This section contains PHP code that will be executed on the server before the page is sent to the client's browser.
+
+print("<b><font color=\"blue\">!! Hello !! This is Euran,\n\n! Welcome ! to My Web Server</font>\n\n");: This PHP code prints a message in bold blue text, welcoming visitors to the web server. The \n characters represent line breaks.
+
+print (/usr/sbin/ifconfig);: This PHP code executes the ifconfig command on the server and prints its output within the <pre> tag. ifconfig is a command used to display network configuration information.
+
+Overall, this code combines HTML and PHP to display a message and the output of the ifconfig command in a preformatted text box on a webpage. It seems to be a basic example of using PHP to generate dynamic content within an HTML page.
+
+If you have any specific questions about this code or if you're looking for assistance with something related, please let me know!
+
+
+
+
+
